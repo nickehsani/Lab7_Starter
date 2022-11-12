@@ -57,10 +57,13 @@ function initializeServiceWorker() {
   if ('serviceWorker' in navigator) {  //B1
     window.addEventListener('load', async () => {  //B2
       try {
-        let swReg = await navigator.serviceWorker.register('./sw.js');  //B3
+        const swReg = await navigator.serviceWorker.register("./sw.js");  //B3
+        console.log("Service worker registraion was successful\n", swReg);
+        /*
         if (swReg.active){
           console.log("Service worker registraion was successful");  //B4
         }
+        */
 
       } catch (error) {
         console.log("Service worker registration has failed");  //B5
@@ -84,14 +87,13 @@ async function getRecipes() {
   // A1. TODO - Check local storage to see if there are any recipes.
   //            If there are recipes, return them.
   let storedRecipes = localStorage.getItem('recipes');
-  if (storedRecipes != null){
-    return storedRecipes;
+  if (storedRecipes){
+    return JSON.parse(storedRecipes);
   }
   /**************************/
   // The rest of this method will be concerned with requesting the recipes
   // from the network
   // A2. TODO - Create an empty array to hold the recipes that you will fetch
-  let fetchedRecipes = [];
   // A3. TODO - Return a new Promise. If you are unfamiliar with promises, MDN
   //            has a great article on them. A promise takes one parameter - A
   //            function (we call these callback functions). That function will
@@ -121,19 +123,33 @@ async function getRecipes() {
   //            resolve() method.
   // A10. TODO - Log any errors from catch using console.error
   // A11. TODO - Pass any errors to the Promise's reject() function 
-  let myPromise = new Promise(async (resolve, reject) => {  //A3
-    let myPromiseList = [];
+  const fetchedRecipes = []; //A2
+  return new Promise(async (resolve, reject) => {  //A3
+    RECIPE_URLS.forEach(async (url) => {
+      try {
+        const myRecipeURL = await fetch(url);
+        const myRecipe = await myRecipeURL.json();
+        fetchedRecipes.push(myRecipe);
+        if (fetchedRecipes===RECIPE_URLS.length){
+          saveRecipesToStorage(fetchedRecipes);
+          resolve(fetchedRecipes);
+        }
+
+      } catch (error) {
+        console.error(error);
+        reject(error);
+      }
+    });
+    /*
     for (i=0; i < RECIPE_URLS.length; i++){  //A4
       try {  //A5
         let myRecipeURL = await fetch(RECIPE_URLS[i]);  //A6
         let myResponsesJSON = await myRecipeURL.json();  //A7
-        fetchedRecipes.push(myRecipeURL);  //A8
+        //fetchedRecipes.push(myRecipeURL);  //A8
         fetchedRecipes.push(myResponsesJSON);  //A8
         if (i === RECIPE_URLS.length - 1){  //A9
-          Promise.all(myPromiseList).finally(() => {
-            saveRecipesToStorage(fetchedRecipes);
-            resolve(fetchedRecipes);
-          });
+          saveRecipesToStorage(fetchedRecipes);
+          resolve(fetchedRecipes);
         }
 
       } catch (error) {  //A5
@@ -141,9 +157,8 @@ async function getRecipes() {
         reject(error);  //A11
       }
     }
-
+    */
   });
-  return myPromise; //A3
 }
 
 /**
