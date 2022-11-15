@@ -2,16 +2,16 @@
 
 // CONSTANTS
 const RECIPE_URLS = [
-  'https://introweb.tech/assets/json/1_50-thanksgiving-side-dishes.json',
-  'https://introweb.tech/assets/json/2_roasting-turkey-breast-with-stuffing.json',
-  'https://introweb.tech/assets/json/3_moms-cornbread-stuffing.json',
-  'https://introweb.tech/assets/json/4_50-indulgent-thanksgiving-side-dishes-for-any-holiday-gathering.json',
-  'https://introweb.tech/assets/json/5_healthy-thanksgiving-recipe-crockpot-turkey-breast.json',
-  'https://introweb.tech/assets/json/6_one-pot-thanksgiving-dinner.json',
+  "https://introweb.tech/assets/json/1_50-thanksgiving-side-dishes.json",
+  "https://introweb.tech/assets/json/2_roasting-turkey-breast-with-stuffing.json",
+  "https://introweb.tech/assets/json/3_moms-cornbread-stuffing.json",
+  "https://introweb.tech/assets/json/4_50-indulgent-thanksgiving-side-dishes-for-any-holiday-gathering.json",
+  "https://introweb.tech/assets/json/5_healthy-thanksgiving-recipe-crockpot-turkey-breast.json",
+  "https://introweb.tech/assets/json/6_one-pot-thanksgiving-dinner.json",
 ];
 
 // Run the init() function when the page has loaded
-window.addEventListener('DOMContentLoaded', init);
+window.addEventListener("DOMContentLoaded", init);
 
 // Starts the program, all function calls trace back here
 async function init() {
@@ -58,16 +58,10 @@ function initializeServiceWorker() {
     window.addEventListener('load', async () => {  //B2
       try {
         const swReg = await navigator.serviceWorker.register("./sw.js");  //B3
-        console.log("Service worker registraion was successful\n", swReg);
-        /*
-        if (swReg.active){
-          console.log("Service worker registraion was successful");  //B4
-        }
-        */
-
+        console.log("Service worker registration was successful\n", swReg);
       } catch (error) {
-        console.log("Service worker registration has failed");  //B5
-        console.error(error);
+        //B5
+        console.error(`Service worker registration failed with ${error}`);
       }
     });
 
@@ -124,7 +118,7 @@ async function getRecipes() {
   // A10. TODO - Log any errors from catch using console.error
   // A11. TODO - Pass any errors to the Promise's reject() function 
   const fetchedRecipes = []; //A2
-  return new Promise(async (resolve, reject) => {  //A3
+  return new Promise((resolve, reject) => {  //A3
     RECIPE_URLS.forEach(async (url) => {
       try {
         const myRecipeURL = await fetch(url);
