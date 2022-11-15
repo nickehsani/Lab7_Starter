@@ -1,4 +1,4 @@
 # Lab 7 - Starter
 
-Partners: None \
+Partners: Nick, Guillaume
 Github pages URL: [here](https://nickehsani.github.io/Lab7_Starter/)
