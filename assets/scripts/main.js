@@ -117,42 +117,26 @@ async function getRecipes() {
   //            resolve() method.
   // A10. TODO - Log any errors from catch using console.error
   // A11. TODO - Pass any errors to the Promise's reject() function 
-  const fetchedRecipes = []; //A2
-  return new Promise((resolve, reject) => {  //A3
-    RECIPE_URLS.forEach(async (url) => {
+  let fetchedRecipes = []; //A2
+
+  const promise = new Promise((resolve, reject) => {  //A3
+    RECIPE_URLS.forEach(async (url, index) => {
       try {
         const myRecipeURL = await fetch(url);
         const myRecipe = await myRecipeURL.json();
         fetchedRecipes.push(myRecipe);
-        if (fetchedRecipes===RECIPE_URLS.length){
+        if (index + 1 === RECIPE_URLS.length){
           saveRecipesToStorage(fetchedRecipes);
           resolve(fetchedRecipes);
         }
-
       } catch (error) {
         console.error(error);
         reject(error);
       }
     });
-    /*
-    for (i=0; i < RECIPE_URLS.length; i++){  //A4
-      try {  //A5
-        let myRecipeURL = await fetch(RECIPE_URLS[i]);  //A6
-        let myResponsesJSON = await myRecipeURL.json();  //A7
-        //fetchedRecipes.push(myRecipeURL);  //A8
-        fetchedRecipes.push(myResponsesJSON);  //A8
-        if (i === RECIPE_URLS.length - 1){  //A9
-          saveRecipesToStorage(fetchedRecipes);
-          resolve(fetchedRecipes);
-        }
-
-      } catch (error) {  //A5
-        console.error(error);  //A10
-        reject(error);  //A11
-      }
-    }
-    */
   });
+  fetchedRecipes = await promise;
+  return fetchedRecipes;
 }
 
 /**
